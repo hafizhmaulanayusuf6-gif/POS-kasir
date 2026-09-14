@@ -5,6 +5,7 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KasirController;
 
 Route::get('/', function () {
     return redirect()->route('produk.index');
@@ -23,6 +24,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/produk', [ProdukController::class, 'index'])->name('produk.index');
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
+    Route::get('/kasir', [KasirController::class, 'index'])->name('kasir.index');
+    Route::post('/kasir', [KasirController::class, 'store'])->name('kasir.store');
 
     // Hanya admin yang boleh Tambah/Edit/Hapus
     Route::middleware(['admin'])->group(function () {
