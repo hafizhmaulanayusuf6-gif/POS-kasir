@@ -6,13 +6,15 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KasirController;
+use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\DashboardKasirController;
 
 Route::get('/', function () {
     return redirect()->route('produk.index');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'admin'])
     ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -26,6 +28,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
     Route::get('/kasir', [KasirController::class, 'index'])->name('kasir.index');
     Route::post('/kasir', [KasirController::class, 'store'])->name('kasir.store');
+    Route::get('/riwayat-transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/riwayat-transaksi/{transaksi}', [TransaksiController::class, 'show'])->name('transaksi.show');
+    Route::get('/dashboard-kasir', [DashboardKasirController::class, 'index'])->name('dashboard-kasir.index');
+
 
     // Hanya admin yang boleh Tambah/Edit/Hapus
     Route::middleware(['admin'])->group(function () {
@@ -39,4 +45,4 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

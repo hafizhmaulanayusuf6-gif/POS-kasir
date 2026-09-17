@@ -1,4 +1,4 @@
-@extends('layouts.produk')
+@extends('layouts.main')
 
 @section('title', 'Data Produk')
 
