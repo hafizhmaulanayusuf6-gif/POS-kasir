@@ -112,15 +112,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('kasir.index') }}">
-                    <i class="bi bi-cart"></i>
-                    <span class="link-text">Kasir</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('transaksi.index') }}">
-                    <i class="bi bi-receipt"></i>
-                    <span class="link-text">Riwayat Transaksi</span>
+                <a class="nav-link" href="{{ route('kategori.index') }}">
+                    <i class="bi bi-tags"></i>
+                    <span class="link-text">Kategori</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -130,9 +124,15 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('kategori.index') }}">
-                    <i class="bi bi-tags"></i>
-                    <span class="link-text">Kategori</span>
+                <a class="nav-link" href="{{ route('kasir.index') }}">
+                    <i class="bi bi-cart"></i>
+                    <span class="link-text">Kasir</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('transaksi.index') }}">
+                    <i class="bi bi-receipt"></i>
+                    <span class="link-text">Riwayat Transaksi</span>
                 </a>
             </li>
         </ul>

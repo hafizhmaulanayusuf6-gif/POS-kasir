@@ -29,10 +29,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kasir', [KasirController::class, 'index'])->name('kasir.index');
     Route::post('/kasir', [KasirController::class, 'store'])->name('kasir.store');
     Route::get('/riwayat-transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/riwayat-transaksi/export', [TransaksiController::class, 'export'])->name('transaksi.export');
     Route::get('/riwayat-transaksi/{transaksi}', [TransaksiController::class, 'show'])->name('transaksi.show');
+    Route::get('/riwayat-transaksi/{transaksi}/struk', [TransaksiController::class, 'struk'])->name('transaksi.struk');
     Route::get('/dashboard-kasir', [DashboardKasirController::class, 'index'])->name('dashboard-kasir.index');
-
-
+    
     // Hanya admin yang boleh Tambah/Edit/Hapus
     Route::middleware(['admin'])->group(function () {
         Route::post('/produk', [ProdukController::class, 'store'])->name('produk.store');
@@ -42,6 +43,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store');
         Route::put('/kategori/{kategori}', [KategoriController::class, 'update'])->name('kategori.update');
         Route::delete('/kategori/{kategori}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+        Route::get('/produk/export', [ProdukController::class, 'export'])->name('produk.export');
+        Route::post('/produk/import', [ProdukController::class, 'import'])->name('produk.import');
     });
 });
 

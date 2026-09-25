@@ -19,9 +19,20 @@
             + Tambah Produk
         </button>
         <a href="{{ route('kategori.index') }}" class="btn btn-outline-dark">Kelola Kategori</a>
+        <a href="{{ route('produk.export') }}" class="btn btn-outline-success">📥 Export Excel</a>
+        <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalImport">
+            📤 Import Excel
+        </button>
         @endif
     </div>
 </div>
+
+<!-- @if (Auth::user()->isAdmin())
+    <a href="{{ route('produk.export') }}" class="btn btn-outline-success">📥 Export Excel</a>
+    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalImport">
+        📤 Import Excel
+    </button>
+@endif -->
 
 <form action="{{ route('produk.index') }}" method="GET" class="mb-3 d-flex gap-2">
     <input type="text" name="search" class="form-control" placeholder="Cari nama produk..." value="{{ request('search') }}">
@@ -162,6 +173,33 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Import -->
+@if (Auth::user()->isAdmin())
+<div class="modal fade" id="modalImport" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('produk.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Import Produk dari Excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted">
+                        Format kolom: <strong>Nama Produk, Kategori, Harga, Stok</strong> (baris pertama harus judul kolom).
+                    </p>
+                    <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 
 {{-- ============ MODAL EDIT PRODUK (1 per baris) ============ --}}
 @foreach ($produks as $p)

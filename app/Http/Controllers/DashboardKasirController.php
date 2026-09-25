@@ -26,12 +26,31 @@ class DashboardKasirController extends Controller
 
         $transaksiTerbaru = Transaksi::with('user')->latest()->limit(5)->get();
 
+        // data omzet 7 hari terakhir untuk chart
+        $omzetMingguan = Transaksi::selectRaw('DATE(created_at) as tanggal, SUM(total_bayar) as total')
+            ->where('created_at', '>=', now()->subDays(6)->startOfDay())
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->get();
+
+        // Susun untuk 7 hari terakhir, isi 0 kalau tidak ada transaksi hari itu
+        $labelChart = [];
+        $dataChart = [];
+        for ($i = 6; $i >= 0; $i-- ) {
+            $tanggal = now()->subDays($i)->format('Y-m-d');
+            $labelChart[] = now()->subDays($i)->translatedFormat('d M');
+            $cocok = $omzetMingguan->firstWhere('tanggal', $tanggal);
+            $dataChart[] = $cocok ? (int) $cocok->total : 0;
+        }
+
         return view('dashboard-kasir.index', compact(
             'omzetHariIni',
             'jumlahTransaksiHariIni',
             'produkTerlaris',
             'metodeBayar',
-            'transaksiTerbaru'
+            'transaksiTerbaru',
+            'labelChart',
+            'dataChart'
         ));
     }
 }

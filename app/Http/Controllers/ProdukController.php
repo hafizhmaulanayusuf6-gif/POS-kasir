@@ -6,6 +6,8 @@ use App\Models\Produk;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\ProdukExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProdukController extends Controller
 {
@@ -108,5 +110,17 @@ class ProdukController extends Controller
         $produk->delete();
 
         return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus!');
+    }
+
+    public function export()
+    {
+        return Excel::download(new ProdukExport, 'data-produk-'. now()->format('Ymd') . '.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
     }
 }

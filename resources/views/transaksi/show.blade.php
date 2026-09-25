@@ -7,6 +7,9 @@
 <h2>Detail Transaksi: {{ $transaksi->kode_transaksi }}</h2>
 
 <a href="{{ route('transaksi.index') }}" class="btn btn-secondary mb-3">← Kembali</a>
+<a href="{{ route('transaksi.struk', $transaksi->id) }}" target="_blank" class="btn  btn-outline-dark mb-3">
+    🖨️ Cetak Struk
+</a>
 
 <div class="card mb-3">
     <div class="card-body">
