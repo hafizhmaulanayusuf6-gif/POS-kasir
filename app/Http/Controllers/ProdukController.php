@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\ProdukExport;
+use App\Imports\ProdukImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProdukController extends Controller
@@ -114,7 +115,7 @@ class ProdukController extends Controller
 
     public function export()
     {
-        return Excel::download(new ProdukExport, 'data-produk-'. now()->format('Ymd') . '.xlsx');
+        return Excel::download(new ProdukExport, 'data-produk-' . now()->format('Ymd') . '.xlsx');
     }
 
     public function import(Request $request)
@@ -122,5 +123,9 @@ class ProdukController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv',
         ]);
+
+        Excel::import(new ProdukImport, $request->file('file'));
+
+        return redirect()->route('produk.index')->with('success', 'Produk berhasil diimport!');
     }
 }

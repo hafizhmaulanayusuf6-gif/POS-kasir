@@ -156,12 +156,52 @@
         </div>
     </div>
 
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1100;">
+        <div id="appToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="appToastBody"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Toggle sidebar
         document.getElementById('sidebarToggle').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('collapsed');
             document.getElementById('main-content').classList.toggle('collapsed');
         });
+
+        // Fungsi Toast
+        function showToast(message, type = 'success') {
+            const toastEl = document.getElementById('appToast');
+            const toastBody = document.getElementById('appToastBody');
+
+            // Hapus warna sebelumnya
+            toastEl.classList.remove(
+                'text-bg-success',
+                'text-bg-danger',
+                'text-bg-warning'
+            );
+
+            // Tambahkan warna sesuai tipe
+            toastEl.classList.add('text-bg-' + type);
+
+            // Isi pesan
+            toastBody.textContent = message;
+
+            // Tombol close putih untuk background gelap
+            const closeButton = toastEl.querySelector('.btn-close');
+            closeButton.classList.toggle('btn-close-white', type !== 'warning');
+
+            // Tampilkan Toast
+            const toast = bootstrap.Toast.getOrCreateInstance(toastEl, {
+                delay: 3500
+            });
+
+            toast.show();
+        }
     </script>
 </body>
 

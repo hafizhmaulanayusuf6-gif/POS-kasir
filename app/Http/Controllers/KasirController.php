@@ -54,7 +54,7 @@ class KasirController extends Controller
             $kembalian = 0;
         }
 
-        DB::transaction(function () use ($cart, $totalBayar, $bayar, $kembalian, $request) {
+        $transaksi = DB::transaction(function () use ($cart, $totalBayar, $bayar, $kembalian, $request) {
             $kodeUrut = Transaksi::whereDate('created_at', today())->count() + 1;
 
             $transaksi = Transaksi::create([
@@ -78,8 +78,12 @@ class KasirController extends Controller
 
                 Produk::find($item['id'])->decrement('stok', $item['jumlah']);
             }
+            return $transaksi; // tambahkan baris ini di akhir closure
         });
 
-        return redirect()->route('kasir.index')->with('success', 'Transaksi berhasil disimpan!');
+        return redirect()->route('kasir.index')->with(
+            'success',
+            'Transaksi ' . $transaksi->kode_transaksi . ' berhasil! Kembalian: Rp ' . number_format($transaksi->kembalian, 0, ',', '.')
+        );
     }
 }

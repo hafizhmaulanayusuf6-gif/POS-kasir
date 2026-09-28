@@ -6,13 +6,6 @@
 
 <h2>Kasir</h2>
 
-@if (session('error'))
-<div class="alert alert-danger">{{ session('error') }}</div>
-@endif
-@if (session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
-@endif
-
 <div class="row">
     <div class="col-md-8">
         <!-- Search Produk -->
@@ -316,5 +309,21 @@
         });
     });
 </script>
+
+@if (session('success') || session('error') || $errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        @if (session('success'))
+            showToast(@json(session('success')), 'success');
+        @endif
+        @if (session('error'))
+            showToast(@json(session('error')), 'danger');
+        @endif
+        @if ($errors->any())
+            showToast(@json($errors->first()), 'danger');
+        @endif
+    });
+</script>
+@endif
 
 @endsection
