@@ -27,13 +27,6 @@
     </div>
 </div>
 
-<!-- @if (Auth::user()->isAdmin())
-    <a href="{{ route('produk.export') }}" class="btn btn-outline-success">📥 Export Excel</a>
-    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalImport">
-        📤 Import Excel
-    </button>
-@endif -->
-
 <form action="{{ route('produk.index') }}" method="GET" class="mb-3 d-flex gap-2">
     <input type="text" name="search" class="form-control" placeholder="Cari nama produk..." value="{{ request('search') }}">
     <button type="submit" class="btn btn-outline-primary">Cari</button>
