@@ -10,7 +10,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\DashboardKasirController;
 
 Route::get('/', function () {
-    return redirect()->route('produk.index');
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -33,7 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat-transaksi/{transaksi}', [TransaksiController::class, 'show'])->name('transaksi.show');
     Route::get('/riwayat-transaksi/{transaksi}/struk', [TransaksiController::class, 'struk'])->name('transaksi.struk');
     Route::get('/dashboard-kasir', [DashboardKasirController::class, 'index'])->name('dashboard-kasir.index');
-    
+
     // Hanya admin yang boleh Tambah/Edit/Hapus
     Route::middleware(['admin'])->group(function () {
         Route::post('/produk', [ProdukController::class, 'store'])->name('produk.store');
