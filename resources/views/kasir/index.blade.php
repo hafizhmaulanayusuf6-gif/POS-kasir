@@ -121,7 +121,7 @@
                     <thead>
                         <tr>
                             <th>Produk</th>
-                            <th class="text-center">Jml</th>
+                            <th class="text-center">Jumlah</th>
                             <th class="text-end">Subtotal</th>
                         </tr>
                     </thead>
