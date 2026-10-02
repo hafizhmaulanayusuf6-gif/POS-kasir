@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\DashboardKasirController;
+use App\Http\Controllers\KaryawanController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -45,6 +46,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/kategori/{kategori}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
         Route::get('/produk/export', [ProdukController::class, 'export'])->name('produk.export');
         Route::post('/produk/import', [ProdukController::class, 'import'])->name('produk.import');
+        Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
+        Route::patch('/karyawan/{user}/status', [KaryawanController::class, 'toggleStatus'])->name('karyawan.status');
     });
 });
 

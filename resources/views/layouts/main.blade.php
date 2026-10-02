@@ -19,7 +19,7 @@
         #sidebar {
             width: var(--sidebar-width);
             min-height: 100vh;
-            background: #1e2a38;
+            background: #1E2A38;
             transition: width 0.2s ease;
             position: fixed;
             top: 0;
@@ -135,6 +135,16 @@
                     <span class="link-text">Riwayat Transaksi</span>
                 </a>
             </li>
+            <hr style="color: #dee2e6;">
+            <!-- Hanya Admin yang bisa kelola karyawan -->
+            @if (Auth::user()->isAdmin())                                 
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('karyawan.index') }}">
+                    <i class="bi bi-people"></i>
+                    <span class="link-text">Kelola Karyawan</span>
+                </a>
+            </li>
+            @endif  
         </ul>
     </div>
 
