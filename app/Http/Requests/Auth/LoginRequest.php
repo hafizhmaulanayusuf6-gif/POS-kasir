@@ -50,6 +50,17 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // ---- TAMBAHKAN blok ini ----
+        // Akun nonaktif ditolak setelah password benar (agar orang lain tidak bisa
+        // menebak akun mana yang nonaktif).
+        if (Auth::user()->is_active === false) {
+            Auth::guard('web')->logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda dinonaktifkan. Hubungi admin.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

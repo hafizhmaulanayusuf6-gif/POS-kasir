@@ -16,6 +16,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
 
+        /* Middleware ini berjalan di setiap request halaman. 
+        Karyawan yang dinonaktifkan saat sedang login akan otomatis keluar pada klik berikutnya, 
+        termasuk jika ia memakai "Remember me".*/
+        $middleware->web(append: [                                   
+            \App\Http\Middleware\EnsureUserIsActive::class,          
+        ]);
+
         $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {

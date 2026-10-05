@@ -108,6 +108,58 @@
     </div>
 </div>
 
+{{-- ============ MODAL KONFIRMASI PEMBAYARAN ============ --}}
+<div class="modal fade" id="modalKonfirmasiBayar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Konfirmasi Pembayaran</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Produk</th>
+                            <th class="text-center">Jumlah</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="konfirmasi-items"></tbody>
+                </table>
+
+                <div class="d-flex justify-content-between fs-5 fw-bold mb-2">
+                    <span>Total</span>
+                    <span id="konfirmasi-total">Rp 0</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Metode</span>
+                    <span id="konfirmasi-metode" class="badge text-bg-secondary"></span>
+                </div>
+
+                <div id="konfirmasi-cash">
+                    <div class="d-flex justify-content-between">
+                        <span>Uang diterima</span>
+                        <span id="konfirmasi-bayar">Rp 0</span>
+                    </div>
+                    <div class="d-flex justify-content-between fs-5 fw-bold text-success">
+                        <span>Kembalian</span>
+                        <span id="konfirmasi-kembalian">Rp 0</span>
+                    </div>
+                </div>
+
+                <div id="konfirmasi-nontunai" class="alert alert-warning small mb-0 d-none">
+                    Pastikan pembayaran <strong id="konfirmasi-pengingat"></strong> sudah benar-benar diterima sebelum melanjutkan.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-success" id="btn-konfirmasi-bayar">Konfirmasi &amp; Bayar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     let cart = [];
 
@@ -203,11 +255,84 @@
         renderCart();
     }
 
-    document.getElementById('form-bayar').addEventListener('submit', function(e) {
-        if (cart.length === 0) {
-            e.preventDefault();
-            alert('Keranjang masih kosong.');
+    // ===== Konfirmasi pembayaran (modal) =====
+    // Form TIDAK langsung dikirim saat klik "Bayar". Modal ringkasan muncul dulu,
+    // dan form baru dikirim saat tombol "Konfirmasi & Bayar" di modal diklik.
+    function formatRupiah(angka) {
+        return 'Rp ' + angka.toLocaleString('id-ID');
+    }
+
+    function isiModalKonfirmasi(total, metode, bayar) {
+        const tbody = document.getElementById('konfirmasi-items');
+        tbody.innerHTML = '';
+
+        cart.forEach(item => {
+            const tr = document.createElement('tr');
+
+            // textContent (bukan innerHTML) agar nama produk tidak dibaca sebagai HTML
+            const tdNama = document.createElement('td');
+            tdNama.textContent = item.nama;
+
+            const tdJumlah = document.createElement('td');
+            tdJumlah.className = 'text-center';
+            tdJumlah.textContent = item.jumlah;
+
+            const tdSubtotal = document.createElement('td');
+            tdSubtotal.className = 'text-end';
+            tdSubtotal.textContent = formatRupiah(item.harga * item.jumlah);
+
+            tr.append(tdNama, tdJumlah, tdSubtotal);
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('konfirmasi-total').textContent = formatRupiah(total);
+        document.getElementById('konfirmasi-metode').textContent = metode.toUpperCase();
+
+        const areaCash = document.getElementById('konfirmasi-cash');
+        const areaNontunai = document.getElementById('konfirmasi-nontunai');
+
+        if (metode === 'cash') {
+            document.getElementById('konfirmasi-bayar').textContent = formatRupiah(bayar);
+            document.getElementById('konfirmasi-kembalian').textContent = formatRupiah(bayar - total);
+            areaCash.classList.remove('d-none');
+            areaNontunai.classList.add('d-none');
+        } else {
+            document.getElementById('konfirmasi-pengingat').textContent = metode.toUpperCase();
+            areaCash.classList.add('d-none');
+            areaNontunai.classList.remove('d-none');
         }
+    }
+
+    document.getElementById('form-bayar').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (cart.length === 0) {
+            alert('Keranjang masih kosong.');
+            return;
+        }
+
+        const total = cart.reduce((sum, item) => sum + (item.harga * item.jumlah), 0);
+        const metode = document.getElementById('metode-bayar-input').value;
+        const bayar = parseInt(document.getElementById('input-bayar').value) || 0;
+
+        if (metode === 'cash' && bayar < total) {
+            showToast('Uang bayar kurang dari total belanja.', 'danger');
+            return;
+        }
+
+        isiModalKonfirmasi(total, metode, bayar);
+
+        // Dibuat saat dibutuhkan: script Bootstrap dimuat layout SETELAH script halaman ini.
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalKonfirmasiBayar')).show();
+    });
+
+    document.getElementById('btn-konfirmasi-bayar').addEventListener('click', function() {
+        // Nonaktifkan tombol agar klik ganda tidak membuat dua transaksi
+        this.disabled = true;
+        this.textContent = 'Memproses...';
+
+        document.getElementById('cart-input').value = JSON.stringify(cart);
+        document.getElementById('form-bayar').submit();
     });
 
     // Filter kategori

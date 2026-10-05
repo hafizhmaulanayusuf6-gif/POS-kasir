@@ -82,43 +82,107 @@
     </div>
 </div>
 
+{{-- ============ OMZET BULANAN (khusus admin) ============ --}}
+@if (Auth::user()->isAdmin() && isset($dataBulanan))
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Omzet Bulanan {{ $tahunDipilih }}
+            <span class="text-muted small ms-2">Total: Rp {{ number_format($totalOmzetTahun, 0, ',', '.') }}</span>
+        </span>
+        <form method="GET" action="{{ route('dashboard-kasir.index') }}">
+            <select name="tahun" class="form-select form-select-sm" onchange="this.form.submit()">
+                @foreach ($daftarTahun as $th)
+                <option value="{{ $th }}" @selected($th==$tahunDipilih)>{{ $th }}</option>
+                @endforeach
+            </select>
+        </form>
+    </div>
+    <div class="card-body">
+        <canvas id="chartOmzetBulanan" height="80"></canvas>
+    </div>
+</div>
+@endif
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
     const ctx = document.getElementById('chartOmzet').getContext('2d');
     new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: @json($labelChart),
-                    datasets: [{
-                        label: 'Omzet (Rp)',
-                        data: @json($dataChart),
-                        borderColor: '#198754',
-                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
-                        fill: true,
-                        tension: 0.3,
-                        pointRadius: 4,
-                    }]
-                },
+        type: 'line',
+        data: {
+            labels: @json($labelChart),
+            datasets: [{
+                label: 'Omzet (Rp)',
+                data: @json($dataChart),
+                borderColor: '#198754',
+                backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+            }]
+        },
 
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
 
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return 'Rp ' + value.toLocaleString('id-ID');
-                                }
-                            }
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + value.toLocaleString('id-ID');
                         }
                     }
                 }
-            });
+            }
+        }
+    });
 </script>
+
+@if (Auth::user()->isAdmin() && isset($dataBulanan))
+<script>
+    new Chart(document.getElementById('chartOmzetBulanan').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: @json($labelBulanan),
+            datasets: [{
+                label: 'Omzet (Rp)',
+                data: @json($dataBulanan),
+                backgroundColor: 'rgba(25, 135, 84, 0.6)',
+                borderColor: '#198754',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+@endif
 @endsection
