@@ -66,4 +66,22 @@ class HalamanAwalTest extends TestCase
             ->get('/login')
             ->assertRedirect(route('dashboard'));
     }
+
+    public function test_kasir_dengan_tujuan_tersimpan_dashboard_tidak_dikirim_ke_403(): void
+    {
+        $this->login($this->kasir(), ['url.intended' => url('/dashboard')])
+            ->assertRedirect(route('kasir.index', absolute: false));
+    }
+
+    public function test_kasir_dengan_tujuan_tersimpan_kelola_karyawan_tidak_dikirim_ke_403(): void
+    {
+        $this->login($this->kasir(), ['url.intended' => url('/karyawan')])
+            ->assertRedirect(route('kasir.index', absolute: false));
+    }
+
+    public function test_admin_tetap_dikirim_ke_tujuan_tersimpan_yang_khusus_admin(): void
+    {
+        $this->login($this->admin(), ['url.intended' => url('/karyawan')])
+            ->assertRedirect(url('/karyawan'));
+    }
 }
