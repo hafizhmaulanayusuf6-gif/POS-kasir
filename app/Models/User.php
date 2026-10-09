@@ -30,6 +30,11 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function routeAwal(): string
+    {
+        return $this->isAdmin() ? 'dashboard' : 'kasir.index';
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

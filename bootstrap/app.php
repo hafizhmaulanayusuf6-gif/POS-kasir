@@ -23,6 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\EnsureUserIsActive::class,          
         ]);
 
+        // Akun yang sudah login lalu membuka /login diarahkan sesuai role
+        $middleware->redirectUsersTo(fn (\Illuminate\Http\Request $request) => route($request->user()->routeAwal()));
+
         $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
